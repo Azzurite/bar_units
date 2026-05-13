@@ -3,9 +3,23 @@ import sys
 from src import github, db, output
 
 default = (
-  [["armorcore", "is", True]],
+  [],
   [
-      "id", "name"
+        "id", "name","description", "faction", "techlevel", "unitgroup", "built_by",
+        "buildcostmetal", "buildcostenergy", "buildtime", "energymake", "metalmake", "workertime",
+        "health_total", "speed",
+        "dps_surface","dps_air", "dps_torpedo",
+        "range_surface","range_air", "range_torpedo", "weapon_energy_per_sec",
+        "explosion_damage", "explosion_aoe","selfdestruct_damage", "selfdestruct_aoe",
+        "health", "health_reactive_armor", "emp_mult",
+        "sightdistance","airsightdistance","radardistance", "sonardistance","jamdistance",
+        "weapon1_name","weapon1_dps","weapon1_range","weapon1_target_only",
+        "weapon2_name","weapon2_dps","weapon2_range","weapon2_target_only",
+        "weapon3_name","weapon3_dps","weapon3_range","weapon3_target_only",
+        "weapon4_name","weapon4_dps","weapon4_range","weapon4_target_only",
+        "weapon5_name","weapon5_dps","weapon5_range","weapon5_target_only",
+        "weapon6_name","weapon6_dps","weapon6_range","weapon6_target_only",
+        "weapon7_name","weapon7_dps","weapon7_range","weapon7_target_only",
   ]
 )
 
@@ -53,7 +67,7 @@ filters = [
 """
 
 def main(filters, selection):
-  github._check_rate_limit()
+  # github._check_rate_limit()
   github.get_all_unit_files()
 
   output.write(

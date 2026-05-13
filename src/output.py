@@ -30,9 +30,19 @@ def write(**kwargs):
   
   print(f"Results output to {filename}")
 
+def _format(row, key):
+  if row.get(key) == None:
+    return ""
+  elif type(row[key]) is list:
+    return ",".join(row[key])
+  elif type(row[key]) is float:
+    return "{:.1f}".format(row[key])
+  else:
+    return row[key]
+
 
 def convert_to_list(row, output_fields, all_weapons):
-  output = [row[k] if type(row[k]) is not float else "{:.1f}".format(row[k]) for k in output_fields]
+  output = [_format(row, k) for k in output_fields]
 
   if all_weapons:
     for k, v in row.get("weapondefs", {}).items():

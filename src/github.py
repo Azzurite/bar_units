@@ -16,6 +16,8 @@ def filename(data):
 def exclude(name):
     if "chicken" in name: return True
     if "scav" in name: return True
+    if "buildinggrounddecal_processor" in name: return True
+    if name.startswith("raptor"): return True
     return False
 
 def _check_rate_limit():
@@ -46,6 +48,7 @@ def _get_file(data):
     result = response.text
     return result
   contents = cache.get(name, execute)
+  print("Eval: " + name)
   return parse.eval_string(contents)
 
 def _get_folder(data):
@@ -80,3 +83,25 @@ def _get_unit(unit):
 def get_all_unit_files():
   folder_contents = _get_unit_folder_contents(bar_user, bar_repo, bar_units_folder)
   _get_complete_folder(folder_contents)
+
+def get_explosions():
+  def execute():
+    url_path = f"https://api.github.com/repos/{bar_user}/{bar_repo}/contents/weapons"
+    response = requests.get(url_path, headers=headers)
+    result = json.dumps(response.json())
+    return result
+  folder_contents = json.loads(cache.get("f_root_weapons", execute))
+  explosions = {}
+  for f in folder_contents:
+    if isinstance(f, str): continue
+    if f["type"] == "file":
+      def execute():
+        url_path = f["download_url"]
+        response = requests.get(url_path, headers=headers)
+        response.encoding = 'utf-8'
+        result = response.text
+        return result
+      contents = cache.get(f["name"], execute)
+      print("Eval: " + f["name"])
+      explosions |= parse.eval_explosions(contents)
+  return explosions

@@ -21,7 +21,7 @@ def eval_string(string):
   try:
     data = lua.execute(string)
     return open_unit_table(data)
-  except lupa._lupa.LuaError as e:
+  except lupa.lua55.LuaError as e:
     if "attempt to index a nil value" in e.args[0]:
       return None
     raise
@@ -31,8 +31,19 @@ def open_unit_table(data):
     results = table_to_dict(data[unit_key])
     return (unit_key, results)
 
+def eval_explosions(string):
+  string = string.replace("table.copy(def)", "{explosiongenerator = \"\"}")
+  string = string.replace("return lowerkeys(unitDeaths)", "return unitDeaths")
+  try:
+    data = lua.execute(string)
+    return table_to_dict(data)
+  except lupa.lua55.LuaError as e:
+    if "attempt to index a nil value" in e.args[0]:
+      return None
+    raise
+
 def table_to_dict(table):
-  return {k: convert_field(k, v) for k, v in table.items()}
+  return { (k.lower() if isinstance(k, str) else k) : convert_field(k, v) for k, v in table.items()}
 
 def convert_field(field, value):
   if isinstance(value, float):
